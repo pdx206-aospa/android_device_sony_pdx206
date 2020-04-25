@@ -1,2 +1,5 @@
 # DPM
 persist.vendor.dpm.feature=9
+
+# Dex2oat
+dalvik.vm.dex2oat64.enabled=true
