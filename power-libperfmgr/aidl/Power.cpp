@@ -87,7 +87,8 @@ constexpr char kPowerHalRenderingProp[] = "vendor.powerhal.rendering";
 Power::Power(std::shared_ptr<DisplayLowPower> dlpw)
     : mDisplayLowPower(dlpw),
       mInteractionHandler(nullptr),
-      mSustainedPerfModeOn(false) {
+      mSustainedPerfModeOn(false),
+      mBatterySaverOn(false) {
     mInteractionHandler = std::make_unique<InteractionHandler>();
     mInteractionHandler->Init();
 
@@ -110,6 +111,13 @@ Power::Power(std::shared_ptr<DisplayLowPower> dlpw)
     if (state == "EXPENSIVE_RENDERING") {
         LOG(INFO) << "Initialize with EXPENSIVE_RENDERING on";
         HintManager::GetInstance()->DoHint("EXPENSIVE_RENDERING");
+    }
+}
+
+static void endAllHints() {
+    std::shared_ptr<HintManager> hm = HintManager::GetInstance();
+    for (auto hint : hm->GetHints()) {
+        hm->EndHint(hint);
     }
 }
 
@@ -138,10 +146,11 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
         case Mode::LOW_POWER:
             mDisplayLowPower->SetDisplayLowPower(enabled);
             if (enabled) {
-                HintManager::GetInstance()->DoHint(toString(type));
+                endAllHints();
             } else {
                 HintManager::GetInstance()->EndHint(toString(type));
             }
+            mBatterySaverOn = enabled;
             break;
         case Mode::SUSTAINED_PERFORMANCE:
             if (enabled) {
@@ -169,6 +178,7 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
         case Mode::GAME_LOADING:
             [[fallthrough]];
         default:
+            if (mBatterySaverOn) break;
             if (enabled) {
                 HintManager::GetInstance()->DoHint(toString(type));
             } else {
@@ -202,7 +212,7 @@ ndk::ScopedAStatus Power::setBoost(Boost type, int32_t durationMs) {
     }
     switch (type) {
         case Boost::INTERACTION:
-            if (mSustainedPerfModeOn) {
+            if (mSustainedPerfModeOn || mBatterySaverOn) {
                 break;
             }
             mInteractionHandler->Acquire(durationMs);
@@ -214,7 +224,7 @@ ndk::ScopedAStatus Power::setBoost(Boost type, int32_t durationMs) {
         case Boost::AUDIO_LAUNCH:
             [[fallthrough]];
         default:
-            if (mSustainedPerfModeOn) {
+            if (mSustainedPerfModeOn || mBatterySaverOn) {
                 break;
             }
             if (durationMs > 0) {
@@ -245,9 +255,11 @@ constexpr const char *boolToString(bool b) {
 binder_status_t Power::dump(int fd, const char **, uint32_t) {
     std::string buf(::android::base::StringPrintf(
             "HintManager Running: %s\n"
-            "SustainedPerformanceMode: %s\n",
+            "SustainedPerformanceMode: %s\n"
+            "BatterySaverMode: %s\n",
             boolToString(HintManager::GetInstance()->IsRunning()),
-            boolToString(mSustainedPerfModeOn)));
+            boolToString(mSustainedPerfModeOn),
+            boolToString(mBatterySaverOn)));
     // Dump nodes through libperfmgr
     HintManager::GetInstance()->DumpToFd(fd);
     PowerSessionManager::getInstance()->dumpToFd(fd);
