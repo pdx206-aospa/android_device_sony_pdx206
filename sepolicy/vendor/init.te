@@ -1,5 +1,7 @@
 allow init debugfs_tracing_debug:dir mounton;
 
+allow init proc:file { write };
+
 # Display
 allow init hal_disp_default_exec:file { read getattr map execute open };
 
