@@ -41,55 +41,10 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 # Audio
 PRODUCT_PACKAGES += \
-    android.hardware.audio@7.1-impl \
-    android.hardware.audio.effect@7.0-impl \
-    android.hardware.audio.service \
-    android.hardware.soundtrigger@2.3-impl \
-    tinyplay \
     audio_amplifier.kona
 
-PRODUCT_PACKAGES += \
-    audio.bluetooth.default \
-    audio.primary.kona \
-    audio.r_submix.default \
-    audio.usb.default \
-    sound_trigger.primary.kona
-
-PRODUCT_PACKAGES += \
-    liba2dpoffload \
-    libbatterylistener \
-    libcomprcapture \
-    libexthwplugin \
-    libhdmiedid \
-    libhfp \
-    libqcompostprocbundle \
-    libqcomvisualizer \
-    libqcomvoiceprocessing \
-    libsndmonitor \
-    libspkrprot \
-    libssrec \
-    libvolumelistener
-
-AUDIO_HAL_DIR := vendor/qcom/opensource/audio-hal/primary-hal
-
 PRODUCT_COPY_FILES += \
-    $(AUDIO_HAL_DIR)/configs/kona/audio_tuning_mixer.txt:$(TARGET_COPY_OUT_VENDOR)/etc/audio_tuning_mixer.txt
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/audio/audio_platform_info_intcodec.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_platform_info_intcodec.xml \
-    $(LOCAL_PATH)/configs/audio/audio_io_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_io_policy.conf \
-    $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
-    $(LOCAL_PATH)/configs/audio/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
-    $(LOCAL_PATH)/configs/audio/sound_trigger_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_mixer_paths.xml \
-    $(LOCAL_PATH)/configs/audio/sound_trigger_platform_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_platform_info.xml \
-    $(LOCAL_PATH)/configs/audio/sound_trigger_platform_info_no_SVA.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_platform_info_no_SVA.xml
-
-PRODUCT_COPY_FILES += \
-    frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
-    frameworks/av/services/audiopolicy/config/bluetooth_audio_policy_configuration_7_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_audio_policy_configuration_7_0.xml \
-    frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
-    frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
-    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml
+    $(call find-copy-subdir-files,*,$(LOCAL_PATH)/configs/audio/,$(TARGET_COPY_OUT_VENDOR)/etc)
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
@@ -326,6 +281,7 @@ TARGET_USE_QTI_BT_STACK := true
 TARGET_USE_AIDL_QTI_BT_AUDIO := true
 
 TARGET_COMMON_QTI_COMPONENTS += \
+    audio \
     bt \
     display \
     init \
