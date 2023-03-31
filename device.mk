@@ -370,6 +370,7 @@ TARGET_COMMON_QTI_COMPONENTS += \
     display \
     init \
     media \
+    qseecomd \
     telephony
 
 # Sensors
