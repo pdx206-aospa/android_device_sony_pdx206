@@ -383,7 +383,9 @@ PRODUCT_PACKAGES += \
     SettingsResTarget \
     SystemUIResTarget \
     TelephonyResTarget \
-    WifiResTarget
+    WifiResTarget \
+    EvolutionFrameworksResTarget \
+    EvolutionSettingsResTarget \
 
 ifeq ("$(wildcard vendor/sony/pdx206-camera)", "")
 PRODUCT_PACKAGES += \
