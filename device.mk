@@ -394,7 +394,11 @@ endif
 
 # Power
 PRODUCT_PACKAGES += \
-    android.hardware.power-service.sony-libperfmgr
+    android.hardware.power-service.sony-libperfmgr:64
+
+PRODUCT_SOONG_NAMESPACES += \
+    hardware/google/interfaces \
+    hardware/google/pixel
 
 # Perf
 PRODUCT_PACKAGES += \
