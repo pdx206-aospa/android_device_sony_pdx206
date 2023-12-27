@@ -2,6 +2,8 @@
 type sony_camera_device, file_type;
 type sysfs_camera, fs_type, sysfs_type;
 
+type vendor_sysfs_msm_subsys, fs_type, sysfs_type;
+
 # Charger
 type vendor_sysfs_smb_device, fs_type, sysfs_type;
 
