@@ -394,8 +394,7 @@ endif
 
 # Power
 PRODUCT_PACKAGES += \
-    android.hardware.power-service-qti \
-    android.hardware.power@1.2.vendor \
+    android.hardware.power-service.sony-libperfmgr
 
 # Perf
 PRODUCT_PACKAGES += \
