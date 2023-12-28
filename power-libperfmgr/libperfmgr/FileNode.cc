@@ -67,7 +67,7 @@ std::chrono::milliseconds FileNode::Update(bool log_error) {
         fd_.reset(TEMP_FAILURE_RETRY(open(node_path_.c_str(), flags)));
 
         if (fd_ == -1 || !android::base::WriteStringToFd(req_value, fd_)) {
-            if (log_error) {
+            if (log_error && node_path_.find(std::string("/sys/devices/system/cpu/cpu")) == std::string::npos) {
                 LOG(WARNING) << "Failed to write to node: " << node_path_
                              << " with value: " << req_value << ", fd: " << fd_;
             }
