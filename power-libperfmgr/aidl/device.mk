@@ -4,10 +4,6 @@ BOARD_SEPOLICY_DIRS += hardware/google/pixel-sepolicy/power-libperfmgr
 PRODUCT_PACKAGES += \
     sendhint
 
-# power HAL
-PRODUCT_PACKAGES += \
-    android.hardware.power-service.sony-libperfmgr
-
 # Enable adpf cpu hint session for SurfaceFlinger and HWUI
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     debug.sf.enable_adpf_cpu_hint=true \
