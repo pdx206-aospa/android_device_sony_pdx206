@@ -20,9 +20,8 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
+
     <!-- StatusBar burn-in protection -->
     <bool name="config_statusBarBurnInProtection">true</bool>
 
-    <!-- The CPU temperature divider, if needed -->
-    <integer name="config_cpuTempDivider" translatable="false">1000</integer>
 </resources>
