@@ -520,10 +520,6 @@ service logdumpd /system/bin/logcat -b all -v threadtime -D -w /dev/block/bootde
     seclabel u:r:logdumpd:s0
     disabled
 
-# Logdumpd is enabled only for userdebug non-perf build
-on property:ro.logdumpd.enabled=1
-    start logdumpd
-
 service time_daemon /vendor/bin/time_daemon
     class main
     user system

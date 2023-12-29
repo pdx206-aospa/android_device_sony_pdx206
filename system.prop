@@ -40,3 +40,6 @@ persist.vendor.data.mode=concurrent
 
 # Vendor
 ro.vendor.qti.va_aosp.support=1
+
+# GPS
+persist.backup.ntpServer=0.pool.ntp.org
