@@ -20,8 +20,7 @@ TARGET_SUPPORTS_QUICK_TAP := true
 EVO_BUILD_TYPE := UNOFFICIAL
 
 # Build Aperture Camera
-PRODUCT_PACKAGES += \
-    Aperture
+TARGET_BUILD_APERTURE_CAMERA := true
 
 # Boot animation resolution.
 TARGET_BOOT_ANIMATION_RES := 1080
