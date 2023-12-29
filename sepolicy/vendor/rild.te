@@ -3,3 +3,8 @@ allow rild hal_secd_hwservice:hwservice_manager { find };
 
 allow rild hal_secd_default:binder { call transfer };
 allow rild tad_socket:dir { write };
+
+userdebug_or_eng(`
+  allow rild vendor_diag_device:chr_file rw_file_perms;
+')
+dontaudit rild vendor_diag_device:chr_file rw_file_perms;

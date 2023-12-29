@@ -6,3 +6,7 @@ allow hal_audio_default hal_miscta_default:binder { call };
 
 allow hal_audio_default vendor_sysfs_kgsl:file r_file_perms;
 
+userdebug_or_eng(`
+  allow hal_audio_default vendor_diag_device:chr_file rw_file_perms;
+')
+dontaudit hal_audio_default vendor_diag_device:chr_file rw_file_perms;
