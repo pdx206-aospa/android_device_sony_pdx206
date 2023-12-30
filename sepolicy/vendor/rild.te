@@ -3,6 +3,7 @@ allow rild hal_secd_hwservice:hwservice_manager { find };
 
 allow rild hal_secd_default:binder { call transfer };
 allow rild tad_socket:dir { write };
+allow rild tad_socket:sock_file { write };
 
 userdebug_or_eng(`
   allow rild vendor_diag_device:chr_file rw_file_perms;
@@ -10,3 +11,5 @@ userdebug_or_eng(`
 dontaudit rild vendor_diag_device:chr_file rw_file_perms;
 
 get_prop(rild, vendor_pd_locater_dbg_prop)
+
+allow rild tad:unix_stream_socket { connectto };

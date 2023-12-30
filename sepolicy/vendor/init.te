@@ -1,6 +1,6 @@
 allow init debugfs_tracing_debug:dir mounton;
 
-dontaudit init debugfs_tracing_debug:file { write };
+dontaudit atrace debugfs_tracing_debug:file { write };
 
 allow init proc:file { write };
 
