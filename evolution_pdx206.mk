@@ -14,10 +14,14 @@ $(call inherit-product, $(LOCAL_PATH)/device.mk)
 # Inherit some common EvolutionX stuff.
 $(call inherit-product, vendor/evolution/config/common_full_phone.mk)
 
-#Extras
+# Evolution-X Extras
 TARGET_USES_PICO_GAPPS := true
 TARGET_SUPPORTS_QUICK_TAP := true
 EVO_BUILD_TYPE := UNOFFICIAL
+
+# Extras
+TARGET_USES_EXTRAS_DOLBY := true
+TARGET_USES_EXTRAS_CAMERAAPPS := true
 
 # Build Aperture Camera
 TARGET_BUILD_APERTURE_CAMERA := true

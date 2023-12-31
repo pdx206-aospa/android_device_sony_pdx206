@@ -97,6 +97,9 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.pro.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.pro.xml \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml
 
+# Extras
+$(call inherit-product, vendor/sony/pdx206-extra/extra.mk)
+
 # Authsecret
 PRODUCT_PACKAGES += \
     android.hardware.authsecret@1.0.vendor
@@ -122,9 +125,6 @@ PRODUCT_PACKAGES += \
     android.hardware.boot@1.2-impl-qti \
     android.hardware.boot@1.2-impl-qti.recovery \
     android.hardware.boot@1.2-service
-
-# Camera
-$(call inherit-product-if-exists, vendor/sony/pdx206-camera/sonycamera.mk)
 
 PRODUCT_PACKAGES += \
     android.hardware.camera.device@3.5.vendor \
