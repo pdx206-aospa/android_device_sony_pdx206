@@ -1,4 +1,4 @@
-{
+
   "Nodes": [
     {
       "Name": "CPULittleClusterMaxFreq",
@@ -166,22 +166,28 @@
     },
     {
       "Name": "GPUMaxFreq",
-      "Path": "/sys/class/kgsl/kgsl-3d0/devfreq/max_freq",
+      "Path": "/sys/class/kgsl/kgsl-3d0/max_pwrlevel",
       "Values": [
-        "585000000",
-        "427000000"
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
       ],
       "DefaultIndex": 0,
       "ResetOnInit": true
     },
     {
       "Name": "GPUMinFreq",
-      "Path": "/sys/class/kgsl/kgsl-3d0/devfreq/min_freq",
+      "Path": "/sys/class/kgsl/kgsl-3d0/min_pwrlevel",
       "Values": [
-        "585000000",
-        "427000000",
-        "345000000",
-        "257000000"
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
       ],
       "ResetOnInit": true
     },
@@ -408,7 +414,7 @@
       "PowerHint": "SUSTAINED_PERFORMANCE",
       "Node": "GPUMaxFreq",
       "Duration": 0,
-      "Value": "427000000"
+      "Value": "2"
     },
     {
       "PowerHint": "INTERACTION",
@@ -463,6 +469,12 @@
       "Node": "LLCCBWMinFreq",
       "Duration": 1000,
       "Value": "2597"
+    },
+    {
+      "PowerHint": "INTERACTION",
+      "Node": "GPUMinFreq",
+      "Duration": 0,
+      "Value": "1"
     },
     {
       "PowerHint": "LAUNCH",
@@ -888,13 +900,13 @@
       "PowerHint": "EXPENSIVE_RENDERING",
       "Node": "GPUMinFreq",
       "Duration": 0,
-      "Value": "427000000"
+      "Value": "3"
     },
     {
       "PowerHint": "EXPENSIVE_RENDERING",
       "Node": "GPUMaxFreq",
       "Duration": 0,
-      "Value": "585000000"
+      "Value": "2"
     },
     {
       "PowerHint": "FP_BOOST",
