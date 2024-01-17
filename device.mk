@@ -385,6 +385,7 @@ PRODUCT_PACKAGES += \
     WifiResTarget \
     EvolutionFrameworksResTarget \
     EvolutionSettingsResTarget \
+    EvolutionSystemUIResTarget \
 
 ifeq ("$(wildcard vendor/sony/pdx206-camera)", "")
 PRODUCT_PACKAGES += \
