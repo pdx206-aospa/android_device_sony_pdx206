@@ -27,7 +27,4 @@
     <string name="config_batDesCap">/sys/class/power_supply/bms/charge_full_design</string>
     <string name="config_batChargeCycle">/sys/class/power_supply/bms/cycle_counts</string>
 
-    <!-- Whether device supports increased touch sensitvity -->
-    <bool name="config_supportTouchPollingMode">true</bool>
-
 </resources>
