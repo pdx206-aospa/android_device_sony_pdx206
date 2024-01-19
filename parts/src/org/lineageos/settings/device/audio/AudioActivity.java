@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.lineageos.settings.device.dolby;
+package org.lineageos.settings.device.audio;
 
 import android.os.Bundle;
 
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity;
 import com.android.settingslib.widget.R;
 
-public class DolbyActivity extends CollapsingToolbarBaseActivity {
+public class AudioActivity extends CollapsingToolbarBaseActivity {
 
-    private static final String TAG_DOLBY = "dolby";
+    private static final String TAG_AUDIO = "audio";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getFragmentManager().beginTransaction().replace(R.id.content_frame,
-                new DolbySettingsFragment(), TAG_DOLBY).commit();
+                new AudioSettingsFragment(), TAG_AUDIO).commit();
     }
 }
