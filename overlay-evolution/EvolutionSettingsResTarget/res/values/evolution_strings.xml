@@ -6,6 +6,6 @@
 <resources>
 
     <string name="build_maintainer_summary" translatable="false">Ahnet</string>
-    <string name="build_maintainer_telegram" translatable-"false">https://t.me/ahnetsh</string>
+    <string name="build_maintainer_telegram" translatable="false">https://t.me/ahnetsh</string>
 
 </resources>
