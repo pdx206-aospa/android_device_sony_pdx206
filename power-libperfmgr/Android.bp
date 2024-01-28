@@ -35,11 +35,6 @@ cc_library {
 
 // Deprecated, do not use
 // Use pixel-power-ext for vendor extension
-cc_library_headers {
-    name: "pixel_power_headers",
-    vendor: true,
-    export_include_dirs: ["hidl"],
-}
 
 cc_binary {
     name: "android.hardware.power-service.sony-libperfmgr",
@@ -66,22 +61,5 @@ cc_binary {
         "aidl/PowerExt.cpp",
         "aidl/PowerHintSession.cpp",
         "aidl/PowerSessionManager.cpp",
-    ],
-}
-
-cc_binary {
-    name: "sendhint",
-    vendor: true,
-    shared_libs: [
-        "android.hardware.power-V3-ndk",
-        "libbase",
-        "libcutils",
-        "liblog",
-        "libutils",
-        "libbinder_ndk",
-        "pixel-power-ext-V1-ndk",
-    ],
-    srcs: [
-        "utilities/sendhint.cc",
     ],
 }
