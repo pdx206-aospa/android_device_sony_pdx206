@@ -90,11 +90,12 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
     }
 #endif
     switch (type) {
-#ifdef TAP_TO_WAKE_NODE
         case Mode::DOUBLE_TAP_TO_WAKE:
-            ::android::base::WriteStringToFile(enabled ? "1" : "0", TAP_TO_WAKE_NODE, true);
+            ::android::base::WriteStringToFile(enabled ? "sod_enable,1" : "sod_enable,0",
+                                               "/sys/devices/virtual/sec/tsp/cmd");
+            ::android::base::WriteStringToFile(enabled ? "1" : "0",
+                                               "/sys/devices/dsi_panel_driver/pre_sod_mode");
             break;
-#endif
         case Mode::SUSTAINED_PERFORMANCE:
             if (enabled) {
                 HintManager::GetInstance()->DoHint("SUSTAINED_PERFORMANCE");
@@ -106,10 +107,6 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
                 break;
             }
             [[fallthrough]];
-#ifndef TAP_TO_WAKE_NODE
-        case Mode::DOUBLE_TAP_TO_WAKE:
-            [[fallthrough]];
-#endif
         case Mode::FIXED_PERFORMANCE:
             [[fallthrough]];
         case Mode::EXPENSIVE_RENDERING:
@@ -142,13 +139,8 @@ ndk::ScopedAStatus Power::isModeSupported(Mode type, bool *_aidl_return) {
 #endif
 
     bool supported = HintManager::GetInstance()->IsHintSupported(toString(type));
-#ifdef TAP_TO_WAKE_NODE
-    if (type == Mode::DOUBLE_TAP_TO_WAKE) {
-        supported = true;
-    }
-#endif
-    // LOW_POWER handled insides PowerHAL specifically
-    if (type == Mode::LOW_POWER) {
+    // LOW_POWER and DOUBLE_TAP_TO_WAKE handled insides PowerHAL specifically
+    if (type == Mode::LOW_POWER || type == Mode::DOUBLE_TAP_TO_WAKE) {
         supported = true;
     }
     LOG(INFO) << "Power mode " << toString(type) << " isModeSupported: " << supported;
