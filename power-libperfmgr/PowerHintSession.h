@@ -17,7 +17,6 @@
 #pragma once
 
 #include <aidl/android/hardware/power/BnPowerHintSession.h>
-#include <aidl/android/hardware/power/SessionHint.h>
 #include <aidl/android/hardware/power/WorkDuration.h>
 #include <utils/Looper.h>
 #include <utils/Thread.h>
@@ -33,7 +32,6 @@ namespace impl {
 namespace pixel {
 
 using aidl::android::hardware::power::BnPowerHintSession;
-using aidl::android::hardware::power::SessionHint;
 using aidl::android::hardware::power::WorkDuration;
 using ::android::Message;
 using ::android::MessageHandler;
@@ -44,7 +42,7 @@ using std::chrono::steady_clock;
 using std::chrono::time_point;
 
 struct AppHintDesc {
-    AppHintDesc(int32_t tgid, int32_t uid, std::vector<int32_t> threadIds)
+    AppHintDesc(int32_t tgid, int32_t uid, std::vector<int> threadIds)
         : tgid(tgid),
           uid(uid),
           threadIds(std::move(threadIds)),
@@ -57,7 +55,7 @@ struct AppHintDesc {
     std::string toString() const;
     const int32_t tgid;
     const int32_t uid;
-    std::vector<int32_t> threadIds;
+    const std::vector<int> threadIds;
     nanoseconds duration;
     int current_min;
     // status
@@ -79,10 +77,9 @@ class PowerHintSession : public BnPowerHintSession {
     ndk::ScopedAStatus updateTargetWorkDuration(int64_t targetDurationNanos) override;
     ndk::ScopedAStatus reportActualWorkDuration(
             const std::vector<WorkDuration> &actualDurations) override;
-    ndk::ScopedAStatus sendHint(SessionHint hint) override;
-    ndk::ScopedAStatus setThreads(const std::vector<int32_t> &threadIds) override;
     bool isActive();
     bool isTimeout();
+    void wakeup();
     void setStale();
     // Is this hint session for a user application
     bool isAppSession();
@@ -90,63 +87,61 @@ class PowerHintSession : public BnPowerHintSession {
     int getUclampMin();
     void dumpToStream(std::ostream &stream);
 
-    // Disable any temporary boost and return to normal operation. It does not
-    // reset the actual uclamp value, and relies on the caller to do so, to
-    // prevent double-setting. Returns true if it actually disabled an active boost
-    bool disableTemporaryBoost();
+    void updateWorkPeriod(const std::vector<WorkDuration> &actualDurations);
+    time_point<steady_clock> getEarlyBoostTime();
+    time_point<steady_clock> getStaleTime();
 
   private:
-    class SessionTimerHandler : public MessageHandler {
+    class StaleTimerHandler : public MessageHandler {
       public:
-        SessionTimerHandler(PowerHintSession *session, std::string name)
-            : mSession(session), mIsSessionDead(false), mName(name) {}
-        void updateTimer(nanoseconds delay);
+        StaleTimerHandler(PowerHintSession *session)
+            : mSession(session), mIsMonitoring(false), mIsSessionDead(false) {}
+        void updateTimer();
+        void updateTimer(time_point<steady_clock> staleTime);
         void handleMessage(const Message &message) override;
         void setSessionDead();
-        virtual void onTimeout() = 0;
 
-      protected:
+      private:
         PowerHintSession *mSession;
         std::mutex mClosedLock;
         std::mutex mMessageLock;
-        std::atomic<time_point<steady_clock>> mTimeout;
+        std::atomic<time_point<steady_clock>> mStaleTime;
+        std::atomic<bool> mIsMonitoring;
         bool mIsSessionDead;
-        const std::string mName;
     };
 
-    class StaleTimerHandler : public SessionTimerHandler {
+    class EarlyBoostHandler : public MessageHandler {
       public:
-        StaleTimerHandler(PowerHintSession *session) : SessionTimerHandler(session, "stale") {}
-        void updateTimer();
-        void onTimeout() override;
-    };
+        EarlyBoostHandler(PowerHintSession *session)
+            : mSession(session), mIsMonitoring(false), mIsSessionDead(false) {}
+        void updateTimer(time_point<steady_clock> boostTime);
+        void handleMessage(const Message &message) override;
+        void setSessionDead();
 
-    class BoostTimerHandler : public SessionTimerHandler {
-      public:
-        BoostTimerHandler(PowerHintSession *session) : SessionTimerHandler(session, "boost") {}
-        void onTimeout() override;
+      private:
+        PowerHintSession *mSession;
+        std::mutex mBoostLock;
+        std::mutex mMessageLock;
+        std::atomic<time_point<steady_clock>> mBoostTime;
+        std::atomic<bool> mIsMonitoring;
+        bool mIsSessionDead;
     };
 
   private:
     void updateUniveralBoostMode();
-    int setSessionUclampMin(int32_t min, bool resetStale = true);
-    void tryToSendPowerHint(std::string hint);
-    int64_t convertWorkDurationToBoostByPid(const std::vector<WorkDuration> &actualDurations);
-    void traceSessionVal(char const *identifier, int64_t val) const;
+    int setSessionUclampMin(int32_t min);
+    std::string getIdString() const;
     AppHintDesc *mDescriptor = nullptr;
     sp<StaleTimerHandler> mStaleTimerHandler;
-    sp<BoostTimerHandler> mBoostTimerHandler;
+    sp<EarlyBoostHandler> mEarlyBoostHandler;
     std::atomic<time_point<steady_clock>> mLastUpdatedTime;
     sp<MessageHandler> mPowerManagerHandler;
     std::mutex mSessionLock;
     std::atomic<bool> mSessionClosed = false;
-    std::string mIdString;
-    // Used when setting a temporary boost value to hold the true boost
-    std::atomic<std::optional<int>> mNextUclampMin;
-    // To cache the status of whether ADPF hints are supported.
-    std::unordered_map<std::string, std::optional<bool>> mSupportedHints;
-    // Last session hint sent, used for logging
-    int mLastHintSent = -1;
+    // These 3 variables are for earlyboost work period estimation.
+    int64_t mLastStartedTimeNs;
+    int64_t mLastDurationNs;
+    int64_t mWorkPeriodNs;
 };
 
 }  // namespace pixel
