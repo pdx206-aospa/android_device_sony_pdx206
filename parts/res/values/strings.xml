@@ -12,16 +12,12 @@
 
     <!-- Audio Related Settings -->
     <string name="audio_setting_header">Advanced Audio Settings</string>
-    <string name="audio_setting_summary">Adjust various Audio Related Settings</string>
+    <string name="audio_setting_summary">Elevate your sound quality with the Dolby Sound EQ for a remarkable and immersive audio playback experience</string>
 
     <!-- Dolby Related Settings -->
-    <string name="dolby_menu_header">Dolby Atmos Settings</string>
-    <string name="dolby_menu_description">Allows You to Adjust Dolby Profiles and Configure Surround</string>
-    <string name="dolby_setting_title">Dolby Atmos</string>
+    <string name="dolby_menu_header">Audio Quality</string>
+    <string name="dolby_menu_description">Adjust various audio settings</string>
+    <string name="dolby_setting_title">Dolby Sound</string>
     <string name="dolby_setting_summary">Adjust Dolby Atmos settings to experience immersive, multidimensional sound that envelops you, bringing movies, music, and games to life</string>
-
-    <!-- 360 Upmix Related Settings -->
-    <string name="upmix_setting_title">360 Upmix</string>
-    <string name="upmix_setting_summary">Enjoy spatial and immersive sound with regular stereo sources, With Sony\'s 360 Reality Audio Upmix (360 Upmix) technology</string>
 
 </resources>

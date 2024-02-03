@@ -40,7 +40,7 @@
             android:name=".audio.AudioActivity"
             android:label="@string/audio_setting_header"
             android:theme="@style/Theme.SubSettingsBase"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.android.settings.action.IA_SETTINGS" />
             </intent-filter>

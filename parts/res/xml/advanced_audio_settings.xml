@@ -33,17 +33,6 @@
                 android:targetClass="com.dolby.daxappui2.MainActivity" />
         </Preference>
 
-        <Preference
-            android:key="audio_360_upmix"
-            android:icon="@drawable/ic_threesixtyupmix"
-            android:title="@string/upmix_setting_title"
-            android:summary="@string/upmix_setting_summary"
-            android:persistent="false"> 
-            <intent
-                android:targetPackage="jp.co.sony.threesixtyra.lite"
-                android:targetClass="ru.g000sha256.bass_booster.MainActivity" />
-        </Preference>
-
     </PreferenceCategory>
 
 </PreferenceScreen>
