@@ -17,18 +17,18 @@ carrier="false"
     # Check if they are japense carrier models
     if grep -aim1 "SOG02" "$ltapath" > /dev/null; then
         carrier="true"
-        setprop vendor.radio.ltalabel.model "SOG02"
+        setprop persist.vendor.nfc.config_file_name "libnfc-nxp-typef.conf"
     fi
     if grep -aim1 "A002SO" "$ltapath" > /dev/null; then
         carrier="true"
-        setprop vendor.radio.ltalabel.model "A002SO"
+        setprop persist.vendor.nfc.config_file_name "libnfc-nxp-typef.conf"
     fi
     if grep -aim1 "SO-52A" "$ltapath" > /dev/null; then
         carrier="true"
-        setprop vendor.radio.ltalabel.model "SO-52A"
+        setprop persist.vendor.nfc.config_file_name "libnfc-nxp-typef.conf"
     fi
     if [ ! "$carrier" == "true" ]; then
-        setprop vendor.radio.ltalabel.model "unknown"
+        setprop persist.vendor.nfc.config_file_name ""
     fi
 
 else
