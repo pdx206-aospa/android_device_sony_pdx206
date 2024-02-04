@@ -28,7 +28,7 @@ carrier="false"
         setprop persist.vendor.nfc.config_file_name "libnfc-nxp-typef.conf"
     fi
     if [ ! "$carrier" == "true" ]; then
-        setprop persist.vendor.nfc.config_file_name ""
+        setprop persist.vendor.nfc.config_file_name "libnfc-nxp.conf"
     fi
 
 else
