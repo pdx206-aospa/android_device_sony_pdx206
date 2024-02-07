@@ -30,6 +30,7 @@
 
 #include "PowerHintSession.h"
 #include "PowerSessionManager.h"
+#include "disp-power/DisplayLowPower.h"
 
 namespace aidl {
 namespace google {
@@ -41,18 +42,22 @@ namespace pixel {
 using ::aidl::google::hardware::power::impl::pixel::PowerHintSession;
 using ::android::perfmgr::HintManager;
 
-#ifdef MODE_EXT
-extern bool isDeviceSpecificModeSupported(Mode type, bool* _aidl_return);
-extern bool setDeviceSpecificMode(Mode type, bool enabled);
-#endif
-
 constexpr char kPowerHalStateProp[] = "vendor.powerhal.state";
 constexpr char kPowerHalAudioProp[] = "vendor.powerhal.audio";
 constexpr char kPowerHalRenderingProp[] = "vendor.powerhal.rendering";
 
-Power::Power()
-    : mInteractionHandler(nullptr),
-      mSustainedPerfModeOn(false) {
+static const std::vector<Mode> kAlwaysAllowedModes = {
+    Mode::DOUBLE_TAP_TO_WAKE,
+    Mode::INTERACTIVE,
+    Mode::DEVICE_IDLE,
+    Mode::DISPLAY_INACTIVE,
+};
+
+Power::Power(std::shared_ptr<DisplayLowPower> dlpw)
+    : mDisplayLowPower(dlpw),
+      mInteractionHandler(nullptr),
+      mSustainedPerfModeOn(false),
+      mBatterySaverOn(false) {
     mInteractionHandler = std::make_unique<InteractionHandler>();
     mInteractionHandler->Init();
 
@@ -78,23 +83,39 @@ Power::Power()
     }
 }
 
+static void endAllHints() {
+    std::shared_ptr<HintManager> hm = HintManager::GetInstance();
+    for (auto hint : hm->GetHints()) {
+        if (std::any_of(kAlwaysAllowedModes.begin(), kAlwaysAllowedModes.end(),
+                [hint](auto mode) { return hint == toString(mode); })) {
+            continue;
+        }
+        hm->EndHint(hint);
+    }
+}
+
 ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
     LOG(DEBUG) << "Power setMode: " << toString(type) << " to: " << enabled;
     if (HintManager::GetInstance()->GetAdpfProfile() &&
         HintManager::GetInstance()->GetAdpfProfile()->mReportingRateLimitNs > 0) {
         PowerSessionManager::getInstance()->updateHintMode(toString(type), enabled);
     }
-#ifdef MODE_EXT
-    if (setDeviceSpecificMode(type, enabled)) {
-        return ndk::ScopedAStatus::ok();
-    }
-#endif
     switch (type) {
-#ifdef TAP_TO_WAKE_NODE
         case Mode::DOUBLE_TAP_TO_WAKE:
-            ::android::base::WriteStringToFile(enabled ? "1" : "0", TAP_TO_WAKE_NODE, true);
+            ::android::base::WriteStringToFile(enabled ? "sod_enable,1" : "sod_enable,0",
+                                               "/sys/devices/virtual/sec/tsp/cmd");
+            ::android::base::WriteStringToFile(enabled ? "1" : "0",
+                                               "/sys/devices/dsi_panel_driver/pre_sod_mode");
             break;
-#endif
+        case Mode::LOW_POWER:
+            mDisplayLowPower->SetDisplayLowPower(enabled);
+            if (enabled) {
+                endAllHints();
+            } else {
+                HintManager::GetInstance()->EndHint(toString(type));
+            }
+            mBatterySaverOn = enabled;
+            break;
         case Mode::SUSTAINED_PERFORMANCE:
             if (enabled) {
                 HintManager::GetInstance()->DoHint("SUSTAINED_PERFORMANCE");
@@ -106,10 +127,6 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
                 break;
             }
             [[fallthrough]];
-#ifndef TAP_TO_WAKE_NODE
-        case Mode::DOUBLE_TAP_TO_WAKE:
-            [[fallthrough]];
-#endif
         case Mode::FIXED_PERFORMANCE:
             [[fallthrough]];
         case Mode::EXPENSIVE_RENDERING:
@@ -122,7 +139,13 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
             [[fallthrough]];
         case Mode::AUDIO_STREAMING_LOW_LATENCY:
             [[fallthrough]];
+        case Mode::GAME_LOADING:
+            [[fallthrough]];
         default:
+            if (mBatterySaverOn && std::find(kAlwaysAllowedModes.begin(),
+                    kAlwaysAllowedModes.end(), type) == kAlwaysAllowedModes.end()) {
+                break;
+            }
             if (enabled) {
                 HintManager::GetInstance()->DoHint(toString(type));
             } else {
@@ -135,20 +158,9 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
 }
 
 ndk::ScopedAStatus Power::isModeSupported(Mode type, bool *_aidl_return) {
-#ifdef MODE_EXT
-    if (isDeviceSpecificModeSupported(type, _aidl_return)) {
-        return ndk::ScopedAStatus::ok();
-    }
-#endif
-
     bool supported = HintManager::GetInstance()->IsHintSupported(toString(type));
-#ifdef TAP_TO_WAKE_NODE
-    if (type == Mode::DOUBLE_TAP_TO_WAKE) {
-        supported = true;
-    }
-#endif
-    // LOW_POWER handled insides PowerHAL specifically
-    if (type == Mode::LOW_POWER) {
+    // LOW_POWER and DOUBLE_TAP_TO_WAKE handled insides PowerHAL specifically
+    if (type == Mode::LOW_POWER || type == Mode::DOUBLE_TAP_TO_WAKE) {
         supported = true;
     }
     LOG(INFO) << "Power mode " << toString(type) << " isModeSupported: " << supported;
@@ -164,7 +176,7 @@ ndk::ScopedAStatus Power::setBoost(Boost type, int32_t durationMs) {
     }
     switch (type) {
         case Boost::INTERACTION:
-            if (mSustainedPerfModeOn) {
+            if (mSustainedPerfModeOn || mBatterySaverOn) {
                 break;
             }
             mInteractionHandler->Acquire(durationMs);
@@ -176,7 +188,7 @@ ndk::ScopedAStatus Power::setBoost(Boost type, int32_t durationMs) {
         case Boost::AUDIO_LAUNCH:
             [[fallthrough]];
         default:
-            if (mSustainedPerfModeOn) {
+            if (mSustainedPerfModeOn || mBatterySaverOn) {
                 break;
             }
             if (durationMs > 0) {
@@ -207,9 +219,11 @@ constexpr const char *boolToString(bool b) {
 binder_status_t Power::dump(int fd, const char **, uint32_t) {
     std::string buf(::android::base::StringPrintf(
             "HintManager Running: %s\n"
-            "SustainedPerformanceMode: %s\n",
+            "SustainedPerformanceMode: %s\n"
+            "BatterySaverMode: %s\n",
             boolToString(HintManager::GetInstance()->IsRunning()),
-            boolToString(mSustainedPerfModeOn)));
+            boolToString(mSustainedPerfModeOn),
+            boolToString(mBatterySaverOn)));
     // Dump nodes through libperfmgr
     HintManager::GetInstance()->DumpToFd(fd);
     PowerSessionManager::getInstance()->dumpToFd(fd);
@@ -234,8 +248,8 @@ ndk::ScopedAStatus Power::createHintSession(int32_t tgid, int32_t uid,
         *_aidl_return = nullptr;
         return ndk::ScopedAStatus::fromExceptionCode(EX_ILLEGAL_ARGUMENT);
     }
-    std::shared_ptr<IPowerHintSession> session = ndk::SharedRefBase::make<PowerHintSession>(
-            tgid, uid, threadIds, durationNanos);
+    std::shared_ptr<IPowerHintSession> session =
+            ndk::SharedRefBase::make<PowerHintSession>(tgid, uid, threadIds, durationNanos);
     *_aidl_return = session;
     return ndk::ScopedAStatus::ok();
 }
