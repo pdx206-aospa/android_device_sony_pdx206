@@ -23,8 +23,8 @@ EVO_BUILD_TYPE := UNOFFICIAL
 TARGET_USES_EXTRAS_DOLBY := true
 TARGET_USES_EXTRAS_CAMERAAPPS := true
 
-# Build Aperture Camera
-TARGET_BUILD_APERTURE_CAMERA := true
+# Dont build Aperture Camera
+TARGET_BUILD_APERTURE_CAMERA := false
 
 # Boot animation resolution.
 TARGET_BOOT_ANIMATION_RES := 1440
