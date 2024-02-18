@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2018 The LineageOS Project
+# Copyright (C) 2022 The Project Elixir
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,17 +12,18 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 # Inherit from device.mk
 $(call inherit-product, $(LOCAL_PATH)/device.mk)
 
-# Inherit some common Project-Elixir stuff.
+# Inherit some common aosp stuff.
 $(call inherit-product, vendor/aosp/config/common_full_phone.mk)
 
 # Extras
 TARGET_USES_EXTRAS_DOLBY := true
 TARGET_USES_EXTRAS_CAMERAAPPS := true
 
-# Project-Elixir Official Stuff
+# Project-Elixir Flags
 IS_PHONE := true
 TARGET_SUPPORTS_QUICK_TAP := true
 CUSTOM_BUILD_TYPE := OFFICIAL
+TARGET_SUPPORTS_CALL_RECORDING := true
 TARGET_SUPPORTS_GOOGLE_RECORDER := false
 TARGET_INCLUDE_STOCK_ACORE := false
 TARGET_INCLUDE_LIVE_WALLPAPERS := false

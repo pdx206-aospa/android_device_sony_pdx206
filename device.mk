@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2018 The LineageOS Project
+# Copyright (C) 2022 The Project Elixir
 #
 # SPDX-License-Identifier: Apache-2.0
 #
