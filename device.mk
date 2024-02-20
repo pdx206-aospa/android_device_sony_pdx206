@@ -388,7 +388,7 @@ PRODUCT_PACKAGES += \
     EvolutionSettingsResTarget \
     EvolutionSystemUIResTarget \
 
-ifeq ("$(wildcard vendor/sony/pdx206-camera)", "")
+ifeq ($(TARGET_USES_EXTRAS_CAMERAAPPS),true)
 PRODUCT_PACKAGES += \
     AOSPApertureResTarget
 endif
