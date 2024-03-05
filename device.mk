@@ -578,5 +578,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     XperiaParts
 
+#Basic Call Recorder
+$(call inherit-product, vendor/bcr/bcr.mk)
+
 # Inherit from vendor blobs
 $(call inherit-product, vendor/sony/pdx206/pdx206-vendor.mk)
