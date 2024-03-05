@@ -352,6 +352,9 @@ PRODUCT_PACKAGES += \
     libvndfwk_detect_jni.qti.vendor
 
 # QTI components
+TARGET_USE_QTI_BT_STACK := true
+TARGET_USE_AIDL_QTI_BT_AUDIO := true
+
 TARGET_COMMON_QTI_COMPONENTS += \
     bt \
     display \
