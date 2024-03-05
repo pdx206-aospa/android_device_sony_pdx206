@@ -388,7 +388,7 @@ PRODUCT_PACKAGES += \
     EvolutionSettingsResTarget \
     EvolutionSystemUIResTarget \
 
-ifeq ($(TARGET_USES_EXTRAS_CAMERAAPPS),true)
+ifneq ($(TARGET_USES_EXTRAS_CAMERAAPPS),true)
 PRODUCT_PACKAGES += \
     AOSPApertureResTarget
 endif
