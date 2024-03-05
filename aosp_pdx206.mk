@@ -16,8 +16,10 @@ $(call inherit-product, $(LOCAL_PATH)/device.mk)
 $(call inherit-product, vendor/aosp/config/common_full_phone.mk)
 
 # Extras
+ifneq ($(wildcard vendor/sony/pdx206-extra),)
 TARGET_USES_EXTRAS_DOLBY := true
 TARGET_USES_EXTRAS_CAMERAAPPS := true
+endif
 
 # Project-Elixir Flags
 IS_PHONE := true
