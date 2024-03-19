@@ -19,7 +19,6 @@ package org.lineageos.settings.device.audio;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.preference.Preference;
