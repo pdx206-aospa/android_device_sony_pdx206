@@ -19,7 +19,7 @@ class DisplaySettingsFragment : PreferenceFragment(), Preference.OnPreferenceCha
         addPreferencesFromResource(R.xml.advanced_disp_settings)
         creatorModeUtils = CreatorModeUtils(context)
 
-        val creatorModePreference = findPreference<SwitchPreference>(CREATOR_MODE_KEY)!!
+        val creatorModePreference = findPreference<SwitchPreferenceCompat>(CREATOR_MODE_KEY)!!
         creatorModePreference.isChecked = creatorModeUtils.isEnabled
         creatorModePreference.onPreferenceChangeListener = this
     }
