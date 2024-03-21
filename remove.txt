@@ -2,4 +2,4 @@ device/sony
 hardware/sony
 vendor/sony
 kernel/sony
-
+vendor/qcom/opensource/vibrator
