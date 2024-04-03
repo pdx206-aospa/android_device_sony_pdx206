@@ -419,7 +419,7 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 
 # Perf
 PRODUCT_PACKAGES += \
-    libqti-perfd-client
+    vendor.qti.hardware.perf@2.2.vendor
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/vendor/perf/commonresourceconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/commonresourceconfigs.xml \
@@ -479,7 +479,8 @@ PRODUCT_PACKAGES += \
     android.hidl.base@1.0.vendor
 
 # Soong namespaces
-PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH)
+PRODUCT_SOONG_NAMESPACES += \
+    hardware/sony
 
 # Storage
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
