@@ -116,6 +116,9 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
 
+# Board
+TARGET_BOARD_PLATFORM := kona
+
 # Boot animation
 TARGET_SCREEN_HEIGHT := 2520
 TARGET_SCREEN_WIDTH := 1080
@@ -552,7 +555,8 @@ $(call inherit-product, vendor/qcom/opensource/vibrator/vibrator-vendor-product.
 
 # VNDK
 PRODUCT_SHIPPING_API_LEVEL := 29
-PRODUCT_USE_PRODUCT_VNDK_OVERRIDE := true
+BOARD_SHIPPING_API_LEVEL := $(BOARD_API_LEVEL)
+PRODUCT_SHIPPING_API_LEVEL := $(BOARD_API_LEVEL)
 
 PRODUCT_COPY_FILES += \
     prebuilts/vndk/v32/arm64/arch-arm-armv8-a/shared/vndk-core/libbinder.so:$(TARGET_COPY_OUT_VENDOR)/lib/libbinder-v32.so \

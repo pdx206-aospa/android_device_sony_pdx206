@@ -98,7 +98,6 @@ TARGET_FS_CONFIG_GEN := $(DEVICE_PATH)/configs/config.fs
 # HIDL
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
     $(DEVICE_PATH)/configs/vintf/framework_compatibility_matrix.xml \
-    hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
     vendor/aosp/config/device_framework_matrix.xml
 DEVICE_MATRIX_FILE += $(DEVICE_PATH)/configs/vintf/compatibility_matrix.xml
 DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/configs/vintf/manifest.xml
@@ -117,7 +116,9 @@ BOARD_KERNEL_CMDLINE := \
     reboot=panic_warm \
     service_locator.enable=1 \
     swiotlb=2048 \
-    zram.backend=z3fold
+    zram.backend=z3fold \
+    androidboot.selinux=permissive
+
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_KERNEL_OFFSET := 0x00008000
@@ -208,7 +209,6 @@ ENABLE_VENDOR_RIL_SERVICE := true
 VENDOR_SECURITY_PATCH := 2022-10-01
 
 # SEPolicy
-include device/qcom/sepolicy_vndr/SEPolicy.mk
 BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
 PRODUCT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
 
