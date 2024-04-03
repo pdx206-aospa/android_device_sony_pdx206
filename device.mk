@@ -407,20 +407,6 @@ PRODUCT_PACKAGES += \
     AOSPApertureResTarget
 endif
 
-# Power
-PRODUCT_PACKAGES += \
-    android.hardware.power-service.sony-libperfmgr
-
-PRODUCT_SOONG_NAMESPACES += \
-    $(LOCAL_PATH) \
-    hardware/sony \
-    hardware/google \
-    hardware/google/pixel \
-    hardware/google/interfaces
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
-
 # sendhint utility
 PRODUCT_PACKAGES += \
     sendhint
@@ -445,6 +431,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/vendor/lm/AdaptLaunchFeature.xml:$(TARGET_COPY_OUT_VENDOR)/etc/lm/AdaptLaunchFeature.xml \
     $(LOCAL_PATH)/configs/vendor/lm/AppClassifierFeature.xml:$(TARGET_COPY_OUT_VENDOR)/etc/lm/AppClassifierFeature.xml \
     $(LOCAL_PATH)/configs/vendor/lm/GameOptimizationFeature.xml:$(TARGET_COPY_OUT_VENDOR)/etc/lm/GameOptimizationFeature.xml
+
+# Power
+PRODUCT_PACKAGES += \
+    android.hardware.power-service-qti \
+    android.hardware.power@1.2.vendor
 
 # Protobuf
 PRODUCT_PACKAGES += \
