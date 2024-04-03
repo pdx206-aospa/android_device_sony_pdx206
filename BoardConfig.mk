@@ -137,8 +137,13 @@ BOARD_MKBOOTIMG_ARGS += --second_offset $(BOARD_KERNEL_SECOND_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 
-TARGET_KERNEL_SOURCE := kernel/sony/sm8250
-TARGET_KERNEL_CONFIG := pdx206_defconfig vendor/debugfs.config
+KERNEL_DEFCONFIG := pdx206_defconfig
+
+# Use External DTC
+TARGET_KERNEL_ADDITIONAL_FLAGS := \
+    DTC_EXT=$(shell pwd)/prebuilts/misc/linux-x86/dtc/dtc \
+    DTC_OVERLAY_TEST_EXT=$(shell pwd)/prebuilts/misc/$(HOST_OS)-x86/libufdt/ufdt_apply_overlay \
+    LLVM=1 LLVM_IAS=1
 
 # Libinit
 TARGET_INIT_VENDOR_LIB := //$(DEVICE_PATH):libinit_pdx206
