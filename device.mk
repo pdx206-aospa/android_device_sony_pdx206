@@ -308,36 +308,6 @@ PRODUCT_PACKAGES += \
     AOSPApertureResTarget
 endif
 
-# sendhint utility
-PRODUCT_PACKAGES += \
-    sendhint
-
-# Enable adpf cpu hint session for SurfaceFlinger and HWUI
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    debug.sf.enable_adpf_cpu_hint=true \
-    debug.hwui.use_hint_manager=true \
-    debug.hwui.target_cpu_time_percent=30
-
-# Perf
-PRODUCT_PACKAGES += \
-    vendor.qti.hardware.perf@2.2.vendor
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/vendor/perf/commonresourceconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/commonresourceconfigs.xml \
-    $(LOCAL_PATH)/configs/vendor/perf/commonsysnodesconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/commonsysnodesconfigs.xml \
-    $(LOCAL_PATH)/configs/vendor/perf/perfboostsconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perfboostsconfig.xml \
-    $(LOCAL_PATH)/configs/vendor/perf/perfconfigstore.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perfconfigstore.xml \
-    $(LOCAL_PATH)/configs/vendor/perf/targetconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetconfig.xml \
-    $(LOCAL_PATH)/configs/vendor/perf/targetresourceconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetresourceconfigs.xml \
-    $(LOCAL_PATH)/configs/vendor/lm/AdaptLaunchFeature.xml:$(TARGET_COPY_OUT_VENDOR)/etc/lm/AdaptLaunchFeature.xml \
-    $(LOCAL_PATH)/configs/vendor/lm/AppClassifierFeature.xml:$(TARGET_COPY_OUT_VENDOR)/etc/lm/AppClassifierFeature.xml \
-    $(LOCAL_PATH)/configs/vendor/lm/GameOptimizationFeature.xml:$(TARGET_COPY_OUT_VENDOR)/etc/lm/GameOptimizationFeature.xml
-
-# Power
-PRODUCT_PACKAGES += \
-    android.hardware.power-service-qti \
-    android.hardware.power@1.2.vendor
-
 # Protobuf
 PRODUCT_PACKAGES += \
     libprotobuf-cpp-full-3.9.1-vendorcompat
@@ -360,6 +330,7 @@ TARGET_COMMON_QTI_COMPONENTS += \
     display \
     init \
     media \
+    perf \
     qseecomd \
     telephony \
     usb
