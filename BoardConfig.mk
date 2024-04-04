@@ -8,6 +8,7 @@ DEVICE_PATH := device/sony/pdx206
 
 # Broken rules
 BUILD_BROKEN_DUP_RULES := true
+NEED_AIDL_NDK_PLATFORM_BACKEND := true
 
 # A/B
 AB_OTA_UPDATER := true
