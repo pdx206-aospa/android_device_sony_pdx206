@@ -96,7 +96,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.pro.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.pro.xml
 
 # Extras
-$(call inherit-product, vendor/sony/pdx206-extra/extra.mk)
+$(call inherit-product-if-exists, vendor/sony/pdx206-extra/extra.mk)
 
 # Authsecret
 PRODUCT_PACKAGES += \
